@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Catalog</title>
+  <script src="main.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      text-align: left;
+      padding: 8px;
+    }
+    th {
+      background-color: #4CAF50;
+      color: white;
+    }
+    tr:nth-child(even) {background-color: #f2f2f2;}
+  </style>
+</head>
+<body>
+  <h1>Product Catalog</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="product-list">
+    </tbody>
+  </table>
+
+  <h2>Shopping Cart</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="cart-list">
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">Total:</td>
+        <td id="cart-total">$0.00</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button onclick="checkout()">Checkout</button>
+
+  <script src="app.js"></script>
+</body>
+</html>
