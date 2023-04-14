@@ -135,51 +135,119 @@
 #     root.mainloop()
 
 
-import time
-from py_mt4 import MT4
+# import time
+# from py_mt4 import MT4
 
-# API ma'lumotlari bilan to'ldiring
-api_user = 'your_api_user'
-api_password = 'your_api_password'
-server = 'your_mt4_server'
-trade_account = 'your_trade_account'
+# # API ma'lumotlari bilan to'ldiring
+# api_user = 'your_api_user'
+# api_password = 'your_api_password'
+# server = 'your_mt4_server'
+# trade_account = 'your_trade_account'
 
-# MetaTrader 4 API bilan ulanish
-mt4 = MT4(api_user, api_password, server)
+# # MetaTrader 4 API bilan ulanish
+# mt4 = MT4(api_user, api_password, server)
 
-# Tizimda akkauntga ulanish
-connected = mt4.connect(trade_account)
+# # Tizimda akkauntga ulanish
+# connected = mt4.connect(trade_account)
 
-if connected:
-    print('Connected to the account')
-else:
-    print('Failed to connect to the account')
-    exit(1)
+# if connected:
+#     print('Connected to the account')
+# else:
+#     print('Failed to connect to the account')
+#     exit(1)
 
-# Bitta akkauntdan 50 ta bitim ochish
-order_count = 50
+# # Bitta akkauntdan 50 ta bitim ochish
+# order_count = 50
 
-for i in range(order_count):
-    result = mt4.order_send(
-        symbol='EURUSD',
-        cmd='OP_BUY',
-        volume=0.01,
-        price=mt4.symbol_info('EURUSD')['ask'],
-        slippage=3,
-        stop_loss=0,
-        take_profit=0,
-        comment='Automated order opening',
-        magic_number=0,
-        expiration=0,
-        pending_price=0
-    )
+# for i in range(order_count):
+#     result = mt4.order_send(
+#         symbol='EURUSD',
+#         cmd='OP_BUY',
+#         volume=0.01,
+#         price=mt4.symbol_info('EURUSD')['ask'],
+#         slippage=3,
+#         stop_loss=0,
+#         take_profit=0,
+#         comment='Automated order opening',
+#         magic_number=0,
+#         expiration=0,
+#         pending_price=0
+#     )
 
-    if 'ticket' in result:
-        print(f'Order {i + 1} opened with ticket number: {result["ticket"]}')
-    else:
-        print(f'Order {i + 1} failed to open: {result["error"]}')
+#     if 'ticket' in result:
+#         print(f'Order {i + 1} opened with ticket number: {result["ticket"]}')
+#     else:
+#         print(f'Order {i + 1} failed to open: {result["error"]}')
 
-    time.sleep(1)
+#     time.sleep(1)
 
-# Ulanishni uzish
-mt4.disconnect()
+# # Ulanishni uzish
+# mt4.disconnect()
+
+
+
+
+
+# import MetaTrader5 as mt5
+# import tkinter as tk
+# from time import sleep
+
+# def open_orders(symbol, order_type, volume, deviation=10, magic=234000, comment="Python script"):
+#     price = mt5.symbol_info_tick(symbol).ask if order_type == mt5.ORDER_TYPE_BUY else mt5.symbol_info_tick(symbol).bid
+#     request = {
+#         "action": mt5.TRADE_ACTION_DEAL,
+#         "symbol": symbol,
+#         "volume": float(volume),
+#         "type": order_type,
+#         "price": price,
+#         "sl": 0,
+#         "tp": 0,
+#         "deviation": deviation,
+#         "magic": magic,
+#         "comment": comment,
+#         "type_time": mt5.ORDER_TIME_GTC,
+#         "type_filling": mt5.ORDER_FILLING_RETURN,
+#     }
+#     return mt5.order_send(request)
+
+# def open_multiple_orders():
+#     symbol = "EURUSD"
+#     order_type = mt5.ORDER_TYPE_BUY
+#     volume = 0.01
+#     orders_to_open = 50
+
+#     for i in range(orders_to_open):
+#         result = open_orders(symbol, order_type, volume)
+#         if result.retcode != mt5.TRADE_RETCODE_DONE:
+#             print("Order failed, retcode={}".format(result.retcode))
+#         else:
+#             print("Order successfully opened, ticket={}".format(result.order))
+#         sleep(0.5)
+
+# def main():
+#     if not mt5.initialize():
+#         print("initialize() failed, error code =", mt5.last_error())
+#         return
+
+#     account = "YOUR_ACCOUNT_NUMBER"  # Replace with your account number
+#     password = "YOUR_PASSWORD"       # Replace with your password
+
+#     authorized = mt5.login(account, password)
+#     if not authorized:
+#         print("Failed to connect at account #{}, error code: {}".format(account, mt5.last_error()))
+#         return
+
+#     print("Connected successfully")
+
+#     app = tk.Tk()
+#     app.title("Open 50 Transactions")
+
+#     button = tk.Button(app, text="Open 50 Transactions", command=open_multiple_orders)
+#     button.pack(padx=20, pady=20)
+
+#     app.mainloop()
+
+#     mt5.shutdown()
+
+# if __name__ == "__main__":
+#     main()
