@@ -81,55 +81,105 @@
 
 
 # -------------------> 3 <----------------------------------
-import ccxt
-from binance.client import Client
-import tkinter as tk
+# import ccxt
+# from binance.client import Client
+# import tkinter as tk
 
-API_KEY = 'your_binance_api_key'
-SECRET_KEY = 'your_binance_secret_key'
+# API_KEY = 'your_binance_api_key'
+# SECRET_KEY = 'your_binance_secret_key'
 
-binance_client = Client(API_KEY, SECRET_KEY)
+# binance_client = Client(API_KEY, SECRET_KEY)
 
-def make_order(symbol, qty, side, order_type):
-    try:
-        binance_client.create_order(
-            symbol=symbol,
-            side=side,
-            type=order_type,
-            quantity=qty
-        )
-        print(f"{side} order for {symbol} has been placed.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+# def make_order(symbol, qty, side, order_type):
+#     try:
+#         binance_client.create_order(
+#             symbol=symbol,
+#             side=side,
+#             type=order_type,
+#             quantity=qty
+#         )
+#         print(f"{side} order for {symbol} has been placed.")
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
 
-def open_positions(symbols, target_qty):
-    for symbol in symbols:
-        make_order(symbol, target_qty, Client.SIDE_BUY, Client.ORDER_TYPE_MARKET)
+# def open_positions(symbols, target_qty):
+#     for symbol in symbols:
+#         make_order(symbol, target_qty, Client.SIDE_BUY, Client.ORDER_TYPE_MARKET)
 
-def close_positions(symbols):
-    for symbol in symbols:
-        balance = float(binance_client.get_asset_balance(asset=symbol[:-3])['free'])
-        if balance > 0:
-            make_order(symbol, balance, Client.SIDE_SELL, Client.ORDER_TYPE_MARKET)
+# def close_positions(symbols):
+#     for symbol in symbols:
+#         balance = float(binance_client.get_asset_balance(asset=symbol[:-3])['free'])
+#         if balance > 0:
+#             make_order(symbol, balance, Client.SIDE_SELL, Client.ORDER_TYPE_MARKET)
 
-def handle_button_click():
-    if not handle_button_click.positions_open:
-        open_positions(symbols, target_qty)
-        handle_button_click.positions_open = True
+# def handle_button_click():
+#     if not handle_button_click.positions_open:
+#         open_positions(symbols, target_qty)
+#         handle_button_click.positions_open = True
+#     else:
+#         close_positions(symbols)
+#         handle_button_click.positions_open = False
+
+# handle_button_click.positions_open = False
+
+# if __name__ == '__main__':
+#     symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'LTCUSDT', 'LINKUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT', 'UNIUSDT']
+#     target_qty = 0.01  # Modify this value according to the minimum quantity allowed for each trading pair
+
+#     root = tk.Tk()
+#     root.title("Trading Bot")
+
+#     button = tk.Button(root, text="Toggle Positions", command=handle_button_click)
+#     button.pack()
+
+#     root.mainloop()
+
+
+import time
+from py_mt4 import MT4
+
+# API ma'lumotlari bilan to'ldiring
+api_user = 'your_api_user'
+api_password = 'your_api_password'
+server = 'your_mt4_server'
+trade_account = 'your_trade_account'
+
+# MetaTrader 4 API bilan ulanish
+mt4 = MT4(api_user, api_password, server)
+
+# Tizimda akkauntga ulanish
+connected = mt4.connect(trade_account)
+
+if connected:
+    print('Connected to the account')
+else:
+    print('Failed to connect to the account')
+    exit(1)
+
+# Bitta akkauntdan 50 ta bitim ochish
+order_count = 50
+
+for i in range(order_count):
+    result = mt4.order_send(
+        symbol='EURUSD',
+        cmd='OP_BUY',
+        volume=0.01,
+        price=mt4.symbol_info('EURUSD')['ask'],
+        slippage=3,
+        stop_loss=0,
+        take_profit=0,
+        comment='Automated order opening',
+        magic_number=0,
+        expiration=0,
+        pending_price=0
+    )
+
+    if 'ticket' in result:
+        print(f'Order {i + 1} opened with ticket number: {result["ticket"]}')
     else:
-        close_positions(symbols)
-        handle_button_click.positions_open = False
+        print(f'Order {i + 1} failed to open: {result["error"]}')
 
-handle_button_click.positions_open = False
+    time.sleep(1)
 
-if __name__ == '__main__':
-    symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'LTCUSDT', 'LINKUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'DOTUSDT', 'UNIUSDT']
-    target_qty = 0.01  # Modify this value according to the minimum quantity allowed for each trading pair
-
-    root = tk.Tk()
-    root.title("Trading Bot")
-
-    button = tk.Button(root, text="Toggle Positions", command=handle_button_click)
-    button.pack()
-
-    root.mainloop()
+# Ulanishni uzish
+mt4.disconnect()
